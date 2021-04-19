@@ -1,9 +1,9 @@
 const { sequelize } = require('../core/db');
 const { Sequelize, Model } = require('sequelize');
 //定以用户模型
-class Users extends Model {
+class UsersModel extends Model {
 }
-Users.init({
+UsersModel.init({
     id: {
         type: Sequelize.BIGINT,
         primaryKey: true,
@@ -30,5 +30,5 @@ Users.init({
     modelName: 'Users',
 });
 exports = module.exports = {
-    Users
+   UsersModel
 }

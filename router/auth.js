@@ -1,36 +1,24 @@
+const { Users } = require('../server/users');
 module.exports = {
     async signup(ctx, next) {
+        console.log(Users);
         if (ctx.method === 'GET') {
             await ctx.render("auth/signup", {
                 title: '注册',
             });
             return;
         }
+        
         let { name, password, email } = ctx.request.body;
-        //TODO对合法性验证
-        let sql = `select * from users where name="${name}"`;
-        let user = await db(sql);
-
-        //对密码进行加密;
+        let user = await Users.create({
+            name: name,
+            password: password,
+            email: email
+        });
         if (!user) {
-            // 生成salt
-            const salt = await bcrypt.genSalt(10);
-            password = await bcrypt.hash(password, salt);
-            // 拼接新增语句
-            let userSQL = `insert into blog1.users(NAME,PASSWORD,EMAIL) values("${name}","${password}","${email}")`;
-            // 存储到数据库
-            await db(userSQL).then((result) => {
-                //TODO 自动登陆
-                ctx.session.user = {
-                    id: result.insertId,
-                    name: name,
-                };
-                ctx.redirect('/');
-            }).catch((err) => {
-                console.log(err);
-            });
+            ctx.redirect('back');
         } else {
-            ctx.redirect('/');
+            console.log(user);
         }
     },
     async login(ctx, next) {

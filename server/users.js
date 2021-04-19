@@ -2,8 +2,8 @@
  * @descriptiion 用户数据访问对象
  * @author Lee
  */
-const { Users } = require('../models/users');
-const bcrypt = require('bcryptjs');
+const { UsersModel }  = require('../models/users');
+const  bcrypt  = require('bcryptjs');
 /**
  * @description 用户相关的增删改查类
  * @class Users
@@ -22,7 +22,7 @@ class Users {
      */
     static async create(params) {
         const { name, password, email } = params;
-        const hasUser = await Users.findOne({
+        const hasUser = await UsersModel.findOne({
             where: {
                 email,
                 name,
@@ -31,7 +31,7 @@ class Users {
         if (hasUser) {
             return false;
         } else {
-            const user = new Users();
+            const user = new UsersModel();
             const salt = bcrypt.genSaltSync(10);
             user.name = name;
             user.email = email;
@@ -54,9 +54,10 @@ class Users {
      */
     static async verify(name, plainPassword) {
         //查询用户是否存在
-        const user = await Users.findOne({
+        const user = await UsersModel.findOne({
             where: {
-                email
+                email,
+                name
             }
         });
         if (!user) {
@@ -81,7 +82,7 @@ class Users {
      */
     static async detail(id) {
         const scope = "noPass";
-        const user = await Users.scope(scope).findOne({
+        const user = await UsersModel.scope(scope).findOne({
             where: {
                 id
             }
@@ -92,4 +93,7 @@ class Users {
             return user;
         }
     }
+}
+exports = module.exports = {
+    Users 
 }
