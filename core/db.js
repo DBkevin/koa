@@ -1,35 +1,22 @@
+const { Sequelize } = require('sequelize');
 const { dbName, dbHost, port, dbUser, dbPass } = require('../config/index').database;
-const mysql = require('mysql');
-let pools = {};
-//创建一个connection
-query = (sql, host = "127.0.0.1") => {
-    if (!pools.hasOwnProperty(host)) {
-        pools[host] = mysql.createPool({
-            host: dbHost,
-            prot: port,
-            user: dbUser,
-            password: dbPass,
-            database: dbName,
-        });
+const sequelize = new Sequelize(dbName, dbUser, dbPass, {
+    host: dbHost,
+    port: port,
+    dialect: 'mysql',
+    timezone: '+08:00',
+    logging: false,
+    define: {
+        //给表添加createAt和updateAt
+        timestamps: true,
+        createdAt: 'created_at',
+        updatedAt: 'updated_at',
+        // 把驼峰命名转换为下划线
+        underscored: true,
     }
-    return new Promise((resolve, reject) => {
-        pools[host].getConnection((err, connection) => {
-            if (err) {
-                reject(err);
-            } else {
-                connection.query(sql, (err, result) => {
-                    if (err) reject(err);
-                    if (result.length === 0) {
-                        resolve(false);
-                    } else {
-                        let string = JSON.stringify(result);
-                        let data = JSON.parse(string);
-                        resolve(data);
-                    }
-                    connection.release();
-                });
-            }
-        });
-    });
+});
+//表不一致就以model为准
+sequelize.sync({ alter: true });
+module.exports = {
+    sequelize
 }
-module.exports = query;
