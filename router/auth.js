@@ -1,5 +1,3 @@
-const db = require('../core/db');
-const bcrypt = require('bcryptjs');
 module.exports = {
     async signup(ctx, next) {
         if (ctx.method === 'GET') {

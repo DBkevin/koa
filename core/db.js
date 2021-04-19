@@ -13,7 +13,15 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
         updatedAt: 'updated_at',
         // 把驼峰命名转换为下划线
         underscored: true,
+        scopes: {
+            noPass: {
+                attributes: {
+                    exclude:['password']
+                }
+            }
+        }
     }
+
 });
 //表不一致就以model为准
 sequelize.sync({ alter: true });
