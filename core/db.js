@@ -9,10 +9,6 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
     define: {
         //给表添加createAt和updateAt
         timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-        // 把驼峰命名转换为下划线
-        underscored: true,
         scopes: {
             noPass: {
                 attributes: {
@@ -23,8 +19,6 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
     }
 
 });
-//表不一致就以model为准
-sequelize.sync({ alter: true });
 module.exports = {
     sequelize
 }

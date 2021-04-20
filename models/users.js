@@ -1,34 +1,25 @@
-const { sequelize } = require('../core/db');
-const { Sequelize, Model } = require('sequelize');
-//定以用户模型
-class UsersModel extends Model {
-}
-UsersModel.init({
-    id: {
-        type: Sequelize.BIGINT,
-        primaryKey: true,
-        autoIncrement: true,
-    },
-    name: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: false,
-    },
-    email: {
-        type: Sequelize.STRING(128),
-        unique: true,
-        allowNull: false,
-        comment: '管理员邮箱'
-    },
-    password: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        comment: '加密后的密码'
-    },
-}, {
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Users extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  };
+  Users.init({
+    name: DataTypes.CHAR,
+    email: DataTypes.CHAR,
+    password: DataTypes.CHAR
+  }, {
     sequelize,
     modelName: 'Users',
-});
-exports = module.exports = {
-   UsersModel
-}
+  });
+  return Users;
+};

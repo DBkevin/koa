@@ -1,22 +1,22 @@
-const { Users } = require('../server/users');
+const { UsersServer } = require('../server/users_server');
 module.exports = {
     async signup(ctx, next) {
-        console.log(Users);
         if (ctx.method === 'GET') {
             await ctx.render("auth/signup", {
                 title: '注册',
             });
             return;
         }
-        
+
         let { name, password, email } = ctx.request.body;
-        let user = await Users.create({
+        let user = await UsersServer.create({
             name: name,
             password: password,
             email: email
         });
         if (!user) {
-            ctx.redirect('back');
+            ctx.redirect('back','/signp');
+            ctx.body = '已经存在';
         } else {
             console.log(user);
         }
@@ -35,7 +35,7 @@ module.exports = {
         if (user && await bcrypt.compare(password, user[0].password)) {
             ctx.session.user = {
                 id: user[0].id,
-                name:name
+                name: name
             }
             ctx.redirect("/");
         } else {
@@ -44,6 +44,6 @@ module.exports = {
     },
     async signout(ctx, next) {
         ctx.session = null;
-       ctx.redirect('back', '/');
+        ctx.redirect('back', '/');
     }
 }

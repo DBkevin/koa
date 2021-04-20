@@ -2,15 +2,15 @@
  * @descriptiion 用户数据访问对象
  * @author Lee
  */
-const { UsersModel }  = require('../models/users');
-const  bcrypt  = require('bcryptjs');
+const  Models  = require('../models/index');
+const bcrypt = require('bcryptjs');
 /**
  * @description 用户相关的增删改查类
  * @class Users
  * @static 
  * 
  */
-class Users {
+class UsersServer {
     //创建用户
     /**
      * 创建用户
@@ -22,7 +22,7 @@ class Users {
      */
     static async create(params) {
         const { name, password, email } = params;
-        const hasUser = await UsersModel.findOne({
+        const hasUser = await Models.Users.findOne({
             where: {
                 email,
                 name,
@@ -31,18 +31,18 @@ class Users {
         if (hasUser) {
             return false;
         } else {
-            const user = new UsersModel();
+            const user = new Models.Users();
             const salt = bcrypt.genSaltSync(10);
             user.name = name;
             user.email = email;
             user.password = bcrypt.hashSync(password, salt);
-            user.save();
+            await user.save();
             return {
-                name: user.name,
+                user: user
             }
         }
     }
-    
+
     /**
      * 验证密码
      * @static
@@ -54,7 +54,7 @@ class Users {
      */
     static async verify(name, plainPassword) {
         //查询用户是否存在
-        const user = await UsersModel.findOne({
+        const user = await Users.findOne({
             where: {
                 email,
                 name
@@ -82,18 +82,18 @@ class Users {
      */
     static async detail(id) {
         const scope = "noPass";
-        const user = await UsersModel.scope(scope).findOne({
+        const user = await Users.scope(scope).findOne({
             where: {
                 id
             }
         });
         if (!user) {
             return false;
-        } else{
+        } else {
             return user;
         }
     }
 }
 exports = module.exports = {
-    Users 
+   UsersServer
 }
