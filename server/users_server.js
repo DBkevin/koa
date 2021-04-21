@@ -2,7 +2,7 @@
  * @descriptiion 用户数据访问对象
  * @author Lee
  */
-const  Models  = require('../models/index');
+const Models = require('../models/index');
 const bcrypt = require('bcryptjs');
 /**
  * @description 用户相关的增删改查类
@@ -36,9 +36,9 @@ class UsersServer {
             user.name = name;
             user.email = email;
             user.password = bcrypt.hashSync(password, salt);
-            await user.save();
+            user.save();
             return {
-                user: user
+                user
             }
         }
     }
@@ -46,7 +46,7 @@ class UsersServer {
     /**
      * 验证密码
      * @static
-     * @memberof  Users
+     * @memberof  UsersServer
      * @param     {string}    name             用户名
      * @param     {string}    plainPassword    用户密码
      *
@@ -75,7 +75,7 @@ class UsersServer {
     /**
      * 查询用户信息
      * @static
-     * @memberof Users
+     * @memberof UsersServer
      * @param     {int}    id    用户ID
      *
      * @return   {(boolean|object)}          不存在用户或错误,返回false,否则返回包含用户信息的对象
@@ -93,7 +93,25 @@ class UsersServer {
             return user;
         }
     }
+    /**
+     * 查找是否唯一
+     *
+     * @param     {string}   name    要查询的字
+     * @param     {string}   field  对应的字段名,默认name
+     * @memberof UsersServer
+     * @return    {boolean}          存在返回true,否则返回false
+     */
+    static async isUnique(name, field = "name") {
+        let isUni = false;
+        isUni = await Users.findOne({
+            where: {
+                field: name
+            }
+        });
+        return isUni;
+    }
+
 }
 exports = module.exports = {
-   UsersServer
+    UsersServer
 }

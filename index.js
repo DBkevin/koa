@@ -11,7 +11,9 @@ app.use(session({
     key:'koa:lee',
     maxAge: 86400000,
 }, app));
-app.use(static(path.join(__dirname), './public'));
+app.use(static(
+    path.join(__dirname, './public')
+))
 app.use(bodyParser());
 app.use(views(path.join(__dirname, './views'), {
     extension: 'ejs',

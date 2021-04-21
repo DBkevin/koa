@@ -2,13 +2,21 @@ const { UsersServer } = require('../server/users_server');
 module.exports = {
     async signup(ctx, next) {
         if (ctx.method === 'GET') {
-            await ctx.render("auth/signup", {
+
+            await ctx.render("common/default", {
                 title: '注册',
+                pagename:"../auth/signup"
             });
             return;
         }
-
         let { name, password, email } = ctx.request.body;
+        //查看是否存在非唯一字段
+        let isUnique = await UsersServer.isUnique(name);
+        if (isUnique) {
+            ctx.session.error = {
+                succes
+            }
+        }
         let user = await UsersServer.create({
             name: name,
             password: password,
@@ -18,7 +26,7 @@ module.exports = {
             ctx.redirect('back','/signp');
             ctx.body = '已经存在';
         } else {
-            console.log(user);
+          
         }
     },
     async login(ctx, next) {
