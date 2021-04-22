@@ -31,14 +31,14 @@ class UsersServer {
         if (hasUser) {
             return false;
         } else {
-            const user = new Models.Users();
+            const user = {};
             const salt = bcrypt.genSaltSync(10);
             user.name = name;
             user.email = email;
             user.password = bcrypt.hashSync(password, salt);
-            user.save();
+            const userInfo = await Models.Users.create(user);
             return {
-                user
+                userInfo
             }
         }
     }
@@ -54,17 +54,18 @@ class UsersServer {
      */
     static async verify(name, plainPassword) {
         //查询用户是否存在
-        const user = await Users.findOne({
+        const user = await Models.Users.findOne({
             where: {
-                email,
-                name
+                name:name
             }
         });
         if (!user) {
             return false;
         } else {
+            console.log(user.password);
+            let currPass = user.password;
             //验证密码是否正确
-            const correct = bcrypt.compareSync(plainPassword, admin.password);
+            const correct = bcrypt.compareSync(plainPassword, currPass);
             if (!correct) {
                 return false;
             } else {
@@ -82,7 +83,7 @@ class UsersServer {
      */
     static async detail(id) {
         const scope = "noPass";
-        const user = await Users.scope(scope).findOne({
+        const user = await Models.Users.scope(scope).findOne({
             where: {
                 id
             }
@@ -94,21 +95,38 @@ class UsersServer {
         }
     }
     /**
-     * 查找是否唯一
+     * 查找名称是否唯一
      *
-     * @param     {string}   name    要查询的字
-     * @param     {string}   field  对应的字段名,默认name
+     * @param     {string}   name    要查询的name
      * @memberof UsersServer
      * @return    {boolean}          存在返回true,否则返回false
      */
-    static async isUnique(name, field = "name") {
-        let isUni = false;
-        isUni = await Users.findOne({
+    static async isUniqueName(name) {
+       const  isUni = await Models.Users.findOne({
             where: {
-                field: name
+                name: name
+            }
+       })
+        console.log(isUni);
+        return isUni;
+       
+    }
+
+    /**
+     * 查找email是否唯一
+     *
+     * @param     {string}   name    要查询的email
+     * @memberof UsersServer
+     * @return    {boolean}          存在返回true,否则返回false
+     */
+    static async isUniqueEmail(email) {
+       const isEmail = await Models.Users.findOne({
+            where: {
+                email: email
             }
         });
-        return isUni;
+        console.log(isEmail);
+        return isEmail;
     }
 
 }
