@@ -1,4 +1,6 @@
 const router = require('koa-router')();
+const isAuth = require('../middlewares/isAuth');
+const Auth = require("../middlewares/Auth");
 module.exports = (app) => {
     router.get('/', async (ctx, next) => {
       await  ctx.render('common/default', {
@@ -6,11 +8,11 @@ module.exports = (app) => {
             pagename: '../index'
         });
     });
-    router.get('/signup', require('./auth').signup);
-    router.post('/signup', require('./auth').signup);
-    router.post('/signout', require('./auth').signout);
-    router.get('/login', require('./auth').login);
-    router.post('/login', require('./auth').login);
+    router.get('/signup', isAuth(),require('./auth').signup);
+    router.post('/signup',isAuth(), require('./auth').signup);
+    router.post('/signout',Auth(),require('./auth').signout);
+    router.get('/login', isAuth(), require('./auth').login);
+    router.post('/login', isAuth(),require('./auth').login);
     app.use(router.routes());
     app.use(router.allowedMethods());
 }
