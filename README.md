@@ -35,3 +35,33 @@ yarn add mysql2 --save-dev
 	5. `npx sequelize db:migrate` 这样就导入了数据库
 3. 在项目中使用`model`
 
+
+## 文章模块使用`models`
+
+1. 新建模型和迁移表
+```bash
+ npx sequelize model:generate --name Posts --attributes centent:text
+```
+2. 修改生成的模型表,添加上外键 `user_id`,并在模型里面新增关联
+3. 增加普通索引
+```bash
+ npx sequelize migration:create --name addIndexToPosts
+```
+4. 执行迁移表
+```bash
+ npx sequelize db:migration
+```
+5.新建种子文件来填充数据
+```bash
+  npx sequelize seed:generate --name createUsers
+```
+6. 使用`faker.js`生成假数据
+7. 编辑种子文件 ,具体查看`seeders`目录下面的
+7. 执行种子,开始生成数据
+8. 新建文章种子来填充数据
+```bash
+  npx sequelize seed:generate --name createPosts
+```
+
+
+
