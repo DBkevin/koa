@@ -5,7 +5,7 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
     port: port,
     dialect: 'mysql',
     timezone: '+08:00',
-    logging: false,
+    logging:true,
     define: {
         //给表添加createAt和updateAt
         timestamps: true,

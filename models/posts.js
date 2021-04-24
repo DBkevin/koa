@@ -10,13 +10,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Posts.belongsTo(models.User)
+      Posts.belongsTo(models.Users, { foreignKey: "user_id", targetKey: 'id' });
     }
   };
   Posts.init({
     centent: DataTypes.TEXT,
     user_id: {
-        type: Sequelize.BIGINT(20),
+        type: DataTypes.BIGINT(20),
         references: {
           model: 'Users',
           key: 'id'

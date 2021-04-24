@@ -62,6 +62,13 @@ yarn add mysql2 --save-dev
 ```bash
   npx sequelize seed:generate --name createPosts
 ```
+9. 编辑种子文件.
+10. 执行填充数据
+```bash
+ npx  sequelize db:seed:all
+```
+
+
 
 
 
