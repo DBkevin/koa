@@ -128,6 +128,32 @@ class UsersServer {
         console.log(isEmail);
         return isEmail;
     }
+    /**
+     * 更新密码
+     *
+     * @param     {string}    password    新密码
+     * @param     {int}    id          要修改的用户ID
+     *
+     * @return    {(object|false)}         修改成功返回user对象,否则false       
+     */
+    static async updatePassword(password,id) {
+         const salt = bcrypt.genSaltSync(10);
+        let user = await Models.Users.update({ password: bcrypt.hashSync(password, salt) }, {
+            where: {
+                id: id
+            }
+        });
+        return user;
+    }
+    static async getAll(page=1) {
+        const pageSize = 5;
+
+        const Users = await Models.Users.findAndCountAll({
+            limit: pageSize,
+            offset: (page - 1) * page,
+        });
+        return Users;
+    }
 
 }
 exports = module.exports = {

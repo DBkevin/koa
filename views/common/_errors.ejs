@@ -1,0 +1,8 @@
+<% if(ctx.session.errors){ %>
+    <div class="alert alert-danger">
+    <% ctx.session.errors.forEach(function (error){ %>
+        <li><%= error %></li>
+   <% }) %>
+    </div>
+<% }%>
+<% ctx.session.errors=null %>
