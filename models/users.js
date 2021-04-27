@@ -16,7 +16,14 @@ module.exports = (sequelize, DataTypes) => {
   Users.init({
     name: DataTypes.CHAR,
     email: DataTypes.CHAR,
-    password: DataTypes.CHAR
+    password: DataTypes.CHAR,
+    avatar: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `/images/2.jpg`;
+      }
+    }
+    
   }, {
     sequelize,
     modelName: 'Users',

@@ -41,12 +41,25 @@ module.exports = {
             pagename: '../users/index',
         }
         let { page } = ctx.query;
-        console.log(ctx.query.page);
-        console.log(page);
         let users = await UsersServer.getAll(page);
         ejsconfig['users'] = users.rows;
         ejsconfig['pages'] = pages(users.count, '/users', page, 5);
         console.log(ejsconfig['pages']);
         await ctx.render('common/default',ejsconfig)
+    },
+    async show(ctx, next) {
+        let ejsconfig = {
+            PAGENAME: '../users/show',
+        };
+        let { id } = ctx.params;
+        let user = await UsersServer.detail(id);
+        if (user) {
+            await ctx.render('common/default', {
+                pagename: '../users/show',
+                user,
+                title: `${user.name}`
+            });
+        }
     }
+
 }

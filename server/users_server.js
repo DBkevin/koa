@@ -81,13 +81,15 @@ class UsersServer {
      *
      * @return   {(boolean|object)}          不存在用户或错误,返回false,否则返回包含用户信息的对象
      */
-    static async detail(id) {
+    static async details(id,InClude='Posts') {
         const scope = "noPass";
         const user = await Models.Users.scope(scope).findOne({
             where: {
                 id
-            }
-        });
+            },
+            include:InClude
+        }
+        );
         if (!user) {
             return false;
         } else {

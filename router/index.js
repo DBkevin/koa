@@ -16,6 +16,7 @@ module.exports = (app) => {
     router.get("/users/:id/edit", Auth(), require('./users').edit);
     router.post("/users/:id/edit", Auth(), require('./users').edit);
     router.get('/users', require('./users').index);
+    router.get('/users/:id', require('./users').show);
     app.use(router.routes());
     app.use(router.allowedMethods());
 }
