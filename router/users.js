@@ -8,7 +8,7 @@ module.exports = {
         }
         if (ctx.method === 'GET') {
             let { id } = ctx.params;
-            let user = await UsersServer.detail(id);
+            let user = await UsersServer.details(id);
             if (user) {
                 ejsconfig['user'] = user;
                 await ctx.render('common/default', ejsconfig);
@@ -44,7 +44,6 @@ module.exports = {
         let users = await UsersServer.getAll(page);
         ejsconfig['users'] = users.rows;
         ejsconfig['pages'] = pages(users.count, '/users', page, 5);
-        console.log(ejsconfig['pages']);
         await ctx.render('common/default',ejsconfig)
     },
     async show(ctx, next) {
@@ -52,12 +51,13 @@ module.exports = {
             PAGENAME: '../users/show',
         };
         let { id } = ctx.params;
-        let user = await UsersServer.detail(id);
+        let user = await UsersServer.details(id);
         if (user) {
             await ctx.render('common/default', {
                 pagename: '../users/show',
                 user,
-                title: `${user.name}`
+                title: `${user.name}`,
+                posts:user.Posts
             });
         }
     }

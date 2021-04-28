@@ -3,7 +3,8 @@
     <img src="<%= user.avatar %>" alt="<%=user.avatar %>" class="mr-3 gravatar"/>
   </a>
   <div class="media-body">
-    <h5 class="mt-0 mb-1"><%=user.name %> <small> / {{ $status->created_at->diffForHumans() }}</small></h5>
-    {{ $status->content }}
+    <h5 class="mt-0 mb-1"><%=user.name %> <small> / <%=post.createdAt %></small></h5>
+    <%= post.id %>|
+    <%= post.centent %>
   </div>
 </li>

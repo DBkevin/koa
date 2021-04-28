@@ -87,7 +87,13 @@ class UsersServer {
             where: {
                 id
             },
-            include:InClude
+            include: [
+                {
+                    association: 'Posts',
+                }
+            ],
+            order:[['Posts','id','desc']]
+            
         }
         );
         if (!user) {
