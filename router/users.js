@@ -51,13 +51,16 @@ module.exports = {
             PAGENAME: '../users/show',
         };
         let { id } = ctx.params;
-        let user = await UsersServer.details(id);
+        let { page } = ctx.query;
+        let user = await UsersServer.details(id, page);
+       let pagetions=pages(user.count,`/users/${id}`,page,5)
         if (user) {
             await ctx.render('common/default', {
                 pagename: '../users/show',
                 user,
                 title: `${user.name}`,
-                posts:user.Posts
+                posts: user.Posts,
+                pages:pagetions
             });
         }
     }

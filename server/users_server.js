@@ -4,6 +4,7 @@
  */
 const Models = require('../models/index');
 const bcrypt = require('bcryptjs');
+const sequelize = require('sequelize');
 /**
  * @description 用户相关的增删改查类
  * @class Users
@@ -56,7 +57,7 @@ class UsersServer {
         //查询用户是否存在
         const user = await Models.Users.findOne({
             where: {
-                name:name
+                name: name
             }
         });
         if (!user) {
@@ -81,8 +82,32 @@ class UsersServer {
      *
      * @return   {(boolean|object)}          不存在用户或错误,返回false,否则返回包含用户信息的对象
      */
-    static async details(id,InClude='Posts') {
+    static async details(id,  page = 1) {
+        const pageSize = 5;
+        /* const Users = await Models.Users.findAndCountAll({
+             limit: pageSize,
+             offset: (page - 1) * page,
+         });
+         */
         const scope = "noPass";
+        const Count = await Models.Users.findOne({
+            where: {
+                id
+            },
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM Posts AS Posts
+                            WHERE
+                                Posts.user_id=Users.id
+                        )`),
+                        'PostsCount'
+                    ]
+                ]
+            }
+        });
         const user = await Models.Users.scope(scope).findOne({
             where: {
                 id
@@ -90,12 +115,14 @@ class UsersServer {
             include: [
                 {
                     association: 'Posts',
-                }
+                    limit: pageSize,
+                    offset: (page - 1) * pageSize,
+                    order: [['id', 'desc']]
+                },
             ],
-            order:[['Posts','id','desc']]
-            
         }
         );
+        user.count = Count.dataValues.PostsCount
         if (!user) {
             return false;
         } else {
@@ -110,14 +137,14 @@ class UsersServer {
      * @return    {boolean}          存在返回true,否则返回false
      */
     static async isUniqueName(name) {
-       const  isUni = await Models.Users.findOne({
+        const isUni = await Models.Users.findOne({
             where: {
                 name: name
             }
-       })
+        })
         console.log(isUni);
         return isUni;
-       
+
     }
 
     /**
@@ -128,12 +155,11 @@ class UsersServer {
      * @return    {boolean}          存在返回true,否则返回false
      */
     static async isUniqueEmail(email) {
-       const isEmail = await Models.Users.findOne({
+        const isEmail = await Models.Users.findOne({
             where: {
                 email: email
             }
         });
-        console.log(isEmail);
         return isEmail;
     }
     /**
@@ -144,8 +170,8 @@ class UsersServer {
      *
      * @return    {(object|false)}         修改成功返回user对象,否则false       
      */
-    static async updatePassword(password,id) {
-         const salt = bcrypt.genSaltSync(10);
+    static async updatePassword(password, id) {
+        const salt = bcrypt.genSaltSync(10);
         let user = await Models.Users.update({ password: bcrypt.hashSync(password, salt) }, {
             where: {
                 id: id
@@ -153,7 +179,7 @@ class UsersServer {
         });
         return user;
     }
-    static async getAll(page=1) {
+    static async getAll(page = 1) {
         const pageSize = 5;
 
         const Users = await Models.Users.findAndCountAll({
