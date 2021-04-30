@@ -1,5 +1,7 @@
 const { UsersServer } = require('../server/users_server');
 const pages = require('../middlewares/pages');
+const { PostsServer } = require('../server/posts_server');
+const Can= require('../middlewares/can');
 module.exports = {
     async edit(ctx, next) {
         let ejsconfig = {
@@ -63,6 +65,35 @@ module.exports = {
                 pages:pagetions
             });
         }
-    }
+    },
+    async create(ctx, next) {
+        const { centent } = ctx.request.body;
+        let id = ctx.session.user.id;
+        let post = PostsServer.create(centent, id);
+        if (post) {
+            ctx.session.info = {
+                success: '发布成功'
+            };
+            ctx.redirect("back", '/');
+        } else {
+            ctx.session.info = {
+                danger:'error,错误'
+            }
+            ctx.redirect('back', '/');
+        }
 
+    },
+    async home(ctx, next) {
+        let isAuth = Can();
+        let ejsConfig = {
+            title: '首页',
+            
+        }
+        if (isAuth) {
+            //登陆状态
+        } else {
+            //未登录
+        }
+
+    }
 }

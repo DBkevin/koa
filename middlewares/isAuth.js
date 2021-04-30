@@ -1,7 +1,6 @@
 exports = module.exports = () => {
     return async (ctx, next) => {
-        console.log('走登陆判定');
-        console.log(ctx.session.user);
+       
         if (typeof(ctx.session.user) == 'undefined' ) {
             await next();
         } else {

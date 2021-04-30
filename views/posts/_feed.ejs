@@ -1,0 +1,13 @@
+<% if(locals.Posts){%>
+
+    <ul class="list-unstyled">
+        <% posts.forEach(function(post){ %>
+            <%- include('../users/_status.esj', {user:user,post:post}) %>
+        <% }) %>
+    </ul>
+    <div class="mt-5">
+        {!! $feed_items->render() !!}
+    </div>
+<% }else{ %>
+        <p>没有数据！</p>
+<% } %>

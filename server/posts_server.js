@@ -11,13 +11,13 @@ const Models = require('../models/index');
  * @static 
  */
 class PostsServer {
-    static async create(content, user_id) {
-        const post = {};
-        post.content = content;
-        post.user_id = user_id;
-        const postInfo = await Models.Posts.create(post);
-        return {
-            postInfo
+    static async create(content, id) {
+        const post = await Models.Posts.create({centent: content,user_id:id})
+        if (post) {
+            console.log(post);
+            return post;
+        } else {
+            return false;
         }
     }
     static async details(id) {
